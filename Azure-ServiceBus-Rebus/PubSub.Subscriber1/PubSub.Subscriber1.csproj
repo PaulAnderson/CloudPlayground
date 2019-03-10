@@ -69,9 +69,6 @@
     <Reference Include="Rebus.AzureServiceBus, Version=6.0.7.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Rebus.AzureServiceBus.6.0.7\lib\netstandard2.0\Rebus.AzureServiceBus.dll</HintPath>
     </Reference>
-    <Reference Include="Rebus.Msmq, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Rebus.Msmq.4.0.0\lib\net45\Rebus.Msmq.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
