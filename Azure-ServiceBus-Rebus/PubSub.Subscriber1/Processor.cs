@@ -37,13 +37,16 @@ namespace PubSub.Subscriber1
                 }
                 if (currentTask != null)
                 {
-                    Console.WriteLine($"Added dequeued from internal queue. Queue length:{_tasks.Count}");
+                    Console.WriteLine($"Processor - Dequeued from internal queue. Queue length:{_tasks.Count}");
+                    Console.WriteLine($"Processor - Starting task ");
                     currentTask.Start();
-                    Console.WriteLine($"Sleeping for 1 sec");
-
+                    currentTask.Wait();
+                    Console.WriteLine($"Processor - Task complete. Sleeping for 1 second");
                     Thread.Sleep(1000);
-                    Console.WriteLine($"Awake.");
-
+                    Console.WriteLine($"Processor - Awake.");
+                } else
+                {
+                    Thread.Sleep(100);
                 }
             }
         }
@@ -54,7 +57,7 @@ namespace PubSub.Subscriber1
             {
                 _tasks.Enqueue(task);
             }
-            Console.WriteLine($"Added task to internal queue. Queue length:{_tasks.Count}");
+            Console.WriteLine($"Processor - Added task to internal queue. Queue length:{_tasks.Count}");
 
             return task;
         }

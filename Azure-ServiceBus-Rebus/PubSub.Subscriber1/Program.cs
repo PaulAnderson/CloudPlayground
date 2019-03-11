@@ -32,6 +32,11 @@ namespace PubSub.Subscriber1
                     .Logging(l => l.ColoredConsole(minLevel: LogLevel.Warn))
                     .Transport(t => t.UseAzureServiceBus(_connectionString, queueName)
                     .AutomaticallyRenewPeekLock())
+                    .Options(o =>
+                    {
+                        o.SetNumberOfWorkers(1);
+                        o.SetMaxParallelism(1);
+                    })
                     .Start();
 
                 activator.Bus.Subscribe<TestMessage>().Wait();
@@ -53,6 +58,7 @@ namespace PubSub.Subscriber1
 
     class Handler : IHandleMessages<TestMessage>, IHandleMessages<StringMessage>, IHandleMessages<DateTimeMessage>, IHandleMessages<TimeSpanMessage>
     {
+        object msgLock = new object();
         Processor _processor;
 
         public Handler(Processor processor)
@@ -66,10 +72,13 @@ namespace PubSub.Subscriber1
             {
                 Console.WriteLine("Before add to queue");
                 if (_processor == null) _processor = new Processor();
-                await _processor.AddTask(new Task(
+                 Task internallyQueuedTask = _processor.AddTask(new Task(
                    () => Console.WriteLine("Got string: {0}", message.Text)
                    ));
                 Console.WriteLine("after add to queue");
+
+                //Await task to keep internal queue at size 1 and leave everything else on the bus...
+                //await internallyQueuedTask;
 
             }
             catch (Exception ex)
@@ -103,11 +112,14 @@ namespace PubSub.Subscriber1
 
         public async Task Handle(DateTimeMessage message)
         {
-            Console.WriteLine("Got DateTime: {0} {1}", message.DateTime, message.DateTime.Millisecond);
-            Console.WriteLine("Local DateTime: {0} {1}", DateTime.Now,DateTime.Now.Millisecond);
-            Console.WriteLine("Time diff (ms): {0}", (DateTime.Now- message.DateTime).Milliseconds);
-            await DoSleepAndUpdateConsole(1000);
 
+            lock (msgLock)
+            {
+                Console.WriteLine("Got DateTime: {0} {1}", message.DateTime, message.DateTime.Millisecond);
+                Console.WriteLine("Local DateTime: {0} {1}", DateTime.Now, DateTime.Now.Millisecond);
+                Console.WriteLine("Time diff (ms): {0}", (DateTime.Now - message.DateTime).TotalMilliseconds);
+                DoSleepAndUpdateConsole(1000).Wait();
+            }
 
         }
 

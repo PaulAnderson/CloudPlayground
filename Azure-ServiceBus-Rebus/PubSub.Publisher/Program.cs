@@ -23,8 +23,13 @@ namespace PubSub.Publisher
             {
                 Configure.With(activator)
                     .Logging(l => l.ColoredConsole(minLevel: LogLevel.Warn))
-                    .Transport(t => t.UseAzureServiceBus(_connectionString, queueName)
-                     .AutomaticallyRenewPeekLock())
+                    .Transport(t => t.UseAzureServiceBusAsOneWayClient(_connectionString))
+                    .Routing(r => r.TypeBased().MapFallback("paulbus2"))
+                     .Options(o =>
+                     {
+                         o.SetNumberOfWorkers(1);
+                         o.SetMaxParallelism(1);
+                     })
                     .Start();
 
                 var startupTime = DateTime.Now;

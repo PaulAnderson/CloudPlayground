@@ -8,10 +8,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PubSub.Subscriber1", "PubSub.Subscriber1\PubSub.Subscriber1.csproj", "{D1BFFD72-E9E0-4D5A-89CC-541A9A25A02B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{38B04808-A0C5-46B5-9632-E9D6938AA9EB}"
-	ProjectSection(SolutionItems) = preProject
-		..\OwinWebHost\README.md = ..\OwinWebHost\README.md
-		README.md = README.md
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PubSub.Messages", "PubSub.Messages\PubSub.Messages.csproj", "{289B486F-B273-4C1B-82D4-4B4AB98B1942}"
 EndProject
